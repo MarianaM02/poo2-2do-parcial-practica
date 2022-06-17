@@ -3,7 +3,12 @@ import matplotlib.pyplot as plt
 
 def main():
     try:
-        archivo = open("caso_06_salida_noHayCambios.in", "rt")
+        archivo = open("caso_01_pruebaDeClase.in", "rt")
+        #archivo = open("caso_02_salida_sinCamino.in", "rt")
+        #archivo = open("caso_03_salida_TodasCallesCambianSentido.in", "rt")
+        #archivo = open("caso_04_salida_faltaDato.in", "rt")
+        #archivo = open("caso_05_mismoOrigenMismoDestino.in", "rt")
+        #archivo = open("caso_06_salida_noHayCambios.in", "rt")
         linea1 = archivo.readline().split()
         cantidadEsquinas = int(linea1[0])
         origenColectivo = int(linea1[1])
