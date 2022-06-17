@@ -2,18 +2,20 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 def main():
-    archivo = open("cambio.in", "rt")
-    linea1 = archivo.readline().split()
-    cantidadEsquinas = int(linea1[0])
-    origenColectivo = int(linea1[1])
-    destinoEscuela = int(linea1[2])
-    cantidadCalles = int(archivo.readline())
-
-    calles = []
-    for x in archivo:
-        calles.append(tuple(int(i) for i in x.split()))
-    archivo.close()
-    oCambioCallesMano = CambioCallesMano(calles, origenColectivo, destinoEscuela)
+    try:
+        archivo = open("cambio.in", "rt")
+        linea1 = archivo.readline().split()
+        cantidadEsquinas = int(linea1[0])
+        origenColectivo = int(linea1[1])
+        destinoEscuela = int(linea1[2])
+        cantidadCalles = int(archivo.readline())
+        calles = []
+        for x in archivo:
+            calles.append(tuple(int(i) for i in x.split()))
+        archivo.close()
+        oCambioCallesMano = CambioCallesMano(calles, origenColectivo, destinoEscuela)
+    except:
+        print("Error al leer el archivo")
 
 class CambioCallesMano:
     def __init__(self, calles, origenColectivo, destinoEscuela):
@@ -25,11 +27,14 @@ class CambioCallesMano:
 
         self.barrioOriginal = nx.DiGraph()
         self.barrioOriginal.add_weighted_edges_from(calles)
-
-        distancias, caminos = nx.single_source_dijkstra(self.barrio, origenColectivo)
-        self.camino = caminos[destinoEscuela]
-        self.distancia = distancias[destinoEscuela]
-        self.encontrarCallesACambiar()
+        self.camino = []
+        try:
+            distancias, caminos = nx.single_source_dijkstra(self.barrio, origenColectivo)
+            self.camino = caminos[destinoEscuela]
+            self.distancia = distancias[destinoEscuela]
+            self.encontrarCallesACambiar()
+        except:
+            print("No se pudo encontrar un camino")
         self.imprimirArchivo()
         self.mostrarBarrio()
 
@@ -49,6 +54,10 @@ class CambioCallesMano:
 
     def imprimirArchivo(self):        
         archivo = open("cambio.out", "wt")
+        if len(self.camino) == 0:
+            archivo.write("NO HAY CAMINO")
+            archivo.close()
+            return
         archivo.write(str(self.distancia) + "\n")
         archivo.write("".join(str(i) + " " for i in self.callesACambiar))
         archivo.close()
@@ -56,7 +65,6 @@ class CambioCallesMano:
     def mostrarBarrio(self):
         pos = nx.spring_layout(self.barrio)
         nx.draw(self.barrio, pos, with_labels=True)
-
         plt.show()
 
 main()
