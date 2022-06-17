@@ -7,7 +7,6 @@ def main():
     cantidadEsquinas = int(linea1[0])
     origenColectivo = int(linea1[1])
     destinoEscuela = int(linea1[2])
-
     cantidadCalles = int(archivo.readline())
 
     calles = []
@@ -27,34 +26,37 @@ class CambioCallesMano:
         self.barrioOriginal = nx.DiGraph()
         self.barrioOriginal.add_weighted_edges_from(calles)
 
-        self.distancias, caminos = nx.single_source_dijkstra(barrio, origenColectivo)
+        distancias, caminos = nx.single_source_dijkstra(self.barrio, origenColectivo)
         self.camino = caminos[destinoEscuela]
         self.distancia = distancias[destinoEscuela]
-        encontrarCallesACambiar()
+        self.encontrarCallesACambiar()
+        self.imprimirArchivo()
+        self.mostrarBarrio()
 
-    def encontrarCallesACambiar():
-        callesACambiar = []
+    def encontrarCallesACambiar(self):
+        self.callesACambiar = []
         for i in range(len(self.camino)-1):
             actual = self.camino[i]
             siguiente = self.camino[i+1]
             adyacentes = nx.neighbors(self.barrioOriginal, actual)
             if siguiente not in adyacentes:
                 for i in range(len(self.calles)):
-                    if calles[i][0] == siguiente and self.calles[i][1] == actual:
-                        callesACambiar.append(i+1)
+                    if self.calles[i][0] == siguiente and self.calles[i][1] == actual:
+                        self.callesACambiar.append(i+1)
                         continue
 
-        callesACambiar.sort()
-        imprimirArchivo()
-    def imprimirArchivo():        
+        self.callesACambiar.sort()
+
+    def imprimirArchivo(self):        
         archivo = open("cambio.out", "wt")
-        archivo.write(str(distancia) + "\n")
-        archivo.write("".join(str(i) + " " for i in callesACambiar))
+        archivo.write(str(self.distancia) + "\n")
+        archivo.write("".join(str(i) + " " for i in self.callesACambiar))
         archivo.close()
 
+    def mostrarBarrio(self):
+        pos = nx.spring_layout(self.barrio)
+        nx.draw(self.barrio, pos, with_labels=True)
 
-# mostrar grafo
-""" pos = nx.spring_layout(barrio)
-nx.draw(barrio, pos, with_labels=True)
+        plt.show()
 
-plt.show()"""
+main()
