@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 def main():
     try:
-        archivo = open("cambio.in", "rt")
+        archivo = open("cambio_caso3_todos_cambios.in", "rt")
         linea1 = archivo.readline().split()
         cantidadEsquinas = int(linea1[0])
         origenColectivo = int(linea1[1])
